@@ -9,7 +9,7 @@ from super_gradients.training import models
 from super_gradients.training.dataloaders.dataloaders import coco_detection_yolo_format_train, \
     coco_detection_yolo_format_val
 from super_gradients.training.losses import PPYoloELoss
-from super_gradients.training.metrics import DetectionMetrics_050
+from super_gradients.training.metrics import DetectionMetrics_050, Accuracy, Top5
 from super_gradients.training.models.detection_models.pp_yolo_e import PPYoloEPostPredictionCallback
 
 ##Converter da COCO format a YOLO
@@ -149,7 +149,7 @@ def trainsetup(dataset_params,model):
             'classes': dataset_params['classes']
         },
         dataloader_params={
-            'batch_size': 10,
+            'batch_size': 8,
             'num_workers': 2
         }
     )
@@ -162,23 +162,11 @@ def trainsetup(dataset_params,model):
             'classes': dataset_params['classes']
         },
         dataloader_params={
-            'batch_size': 10,
+            'batch_size': 8,
             'num_workers': 2
         }
     )
 
-    test_data = coco_detection_yolo_format_val(
-        dataset_params={
-            'data_dir': dataset_params['data_dir'],
-            'images_dir': dataset_params['test_images_dir'],
-            'labels_dir': dataset_params['test_labels_dir'],
-            'classes': dataset_params['classes']
-        },
-        dataloader_params={
-            'batch_size': 10,
-            'num_workers': 2
-        }
-    )
     train_params = {
         # ENABLING SILENT MODE
         'silent_mode': False,
@@ -219,10 +207,41 @@ def trainsetup(dataset_params,model):
         ],
         "metric_to_watch": 'mAP@0.50'
     }
+
     trainer.train(model=model,
                   training_params=train_params,
                   train_loader=train_data,
                   valid_loader=val_data)
+def evaluateNAS(model,dataset_params):
+    test_data = coco_detection_yolo_format_val(
+        dataset_params={
+            'data_dir': dataset_params['data_dir'],
+            'images_dir': dataset_params['test_images_dir'],
+            'labels_dir': dataset_params['test_labels_dir'],
+            'classes': dataset_params['classes']
+        },
+        dataloader_params={
+            'batch_size': 8,
+            'num_workers': 2
+        }
+    )
+    test_results=trainer.test(model=model,test_loader=test_data,test_metrics_list=DetectionMetrics_050(
+                score_thres=0.1,
+                top_k_predictions=300,
+                include_classwise_ap=True,
+                # NOTE: num_classes needs to be defined here
+                num_cls=len(dataset_params['classes']),
+                class_names=dataset_params['classes'],
+                normalize_targets=True,
+                post_prediction_callback=PPYoloEPostPredictionCallback(
+                    score_threshold=0.01,
+                    nms_top_k=1000,
+                    max_predictions=300,
+                    nms_threshold=0.7
+                )
+            ))
+    print(test_results)
+    
 
 if __name__ == '__main__':
     #converter()
@@ -234,7 +253,7 @@ if __name__ == '__main__':
     print(torch.cuda.is_available())
     trainer = Trainer(experiment_name='fine_tuning', ckpt_root_dir='save/fine_tuning')
     dataset_params = {
-        'data_dir': 'FLIR_ADAS_v2',
+        'data_dir': 'datasets/FLIR_ADAS_v2',
         'train_images_dir': 'images_thermal_train/converted_train/images',
         'train_labels_dir': 'images_thermal_train/converted_train/labels',
         'val_images_dir': 'images_thermal_val/converted_val/images',
@@ -247,5 +266,5 @@ if __name__ == '__main__':
                        num_classes=len(dataset_params['classes']),
                        checkpoint_path="save/fine_tuning/fine_tuning/RUN_20231220_133135_195309/ckpt_best.pth")
     #trainsetup(dataset_params,model)
-
+    evaluateNAS(model,dataset_params)
     #test_model(model,'FLIR_ADAS_v2/video_thermal_test/converted_test/images','save/fine_tuning/predictions 20122023')

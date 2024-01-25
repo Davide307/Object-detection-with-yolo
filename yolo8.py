@@ -18,9 +18,9 @@ def test_model(model, test_root, destination):
 
 
 if __name__ == '__main__':
-    model = YOLO('runs/detect/train/weights/best.pt')
-    test_model(model,'datasets/FLIR_ADAS_v2/video_thermal_test/converted_test/images','save_yolo8/yolo8s_no_base')
+    model = YOLO('save/fine_tuning/fine_tuning/RUNbase6to8(new)')
+    #test_model(model,'datasets/FLIR_ADAS_v2/video_thermal_test/converted_test/images','save_yolo8/aug6to8(new)base')
     #thermal_y8.yaml contiene le classi ed i path i vari dataset
-    #model.train(data='thermal_y8.yaml', epochs=10, batch=8, device=1)
-    #metrics = model.val()
-    #print(metrics.box.map50)
+    #model.train(data='thermal_y8.yaml', epochs=10, batch=10, device=1)
+    met=model.val(data='thermal_y8_val.yaml',device=1)
+    print(met.box.map50)

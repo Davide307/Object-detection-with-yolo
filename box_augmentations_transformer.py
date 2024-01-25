@@ -34,7 +34,6 @@ def transforms_preset_3(min_visibility):
         A.Flip(p=0.6),
         A.MotionBlur(p=0.2),
         A.MedianBlur(blur_limit=3, p=0.5),
-        A.RandomFog(p=0.5),
     ], bbox_params=A.BboxParams(
         format='coco', label_fields=['class_labels'],
         min_visibility=min_visibility,min_area=1)
@@ -72,7 +71,7 @@ def transforms_preset_5(min_visibility):
     return preset
 
 
-def transforms_preset_6(min_visibility):
+def transforms_preset_10(min_visibility):
     preset = A.Compose([
         A.RandomRotate90(p=0.5),
         A.Flip(p=0.5),
@@ -85,7 +84,7 @@ def transforms_preset_6(min_visibility):
     return preset
 
 
-def transforms_preset_7(min_visibility):
+def transforms_preset_11(min_visibility):
     preset = A.Compose([
         A.CLAHE(p=0.5),
         A.RandomRotate90(p=0.3),
@@ -99,7 +98,7 @@ def transforms_preset_7(min_visibility):
     return preset
 
 
-def transforms_preset_8(min_visibility):
+def transforms_preset_12(min_visibility):
     preset = A.Compose([
         A.RGBShift(p=0.6),
         A.Blur(p=0.4),
@@ -113,5 +112,18 @@ def transforms_preset_8(min_visibility):
     )
     return preset
 
+def transforms_preset_9(min_visibility):
+    preset = A.Compose([
+        A.Emboss(p=0.4),
+        A.Equalize(p=0.4),
+        A.FancyPCA(p=0.4),
+        A.ToRGB(p=0.3),
+        A.RandomRotate90(p=0.3),
 
-TRANSFORMS_LIST = [transforms_preset_6,transforms_preset_7,transforms_preset_8]
+    ], bbox_params=A.BboxParams(format='coco', label_fields=['class_labels'],
+                                min_visibility=min_visibility)
+    )
+    return preset
+
+
+TRANSFORMS_LIST = [transforms_preset_6,transforms_preset_7,transforms_preset_8,transforms_preset_9]
