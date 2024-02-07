@@ -1,10 +1,10 @@
 # Object-detection-with-yolo
-## Questa repository contiene il codice utilizzato per fare train sul dataset FLIR_ADAS con yolo NAS e yolo 8, contiene anche il codice necessario per trasformare un dataset da formato COCO a YOLO su cui opera il seguente progetto
-### yolo_NAS.py contiene il codice per fare training con YOLO-NAS
-### yolo8.py contiene il codice per fare training con YOLO8
-### augmentation.py consente di fare augmentation su questo particolare dataset con Albumentation
-### box_augmentations_transformer.py contiene varie trasformazioni
-### thermal_y8.yaml contiene i dati per il trainer yolo8
-### thermal_y8_val.yaml contiene i dati per il trainer yolo8
-<sub>Le varie directory devono essere riempostate a seconda del progetto in locale </sub>
+## This repository contains the code used to train on the FLIR_ADAS dataset with yolo NAS and yolo 8, it also contains the code necessary to transform a dataset from COCO format to YOLO on which the following project operates
+### yolo_NAS.py contains the code for training with YOLO-NAS
+### yolo8.py contains the code for training with YOLOv8
+### augmentation.py allows to do augmentation on this particular dataset with Albumentation
+### box_augmentations_transformer.py contains various transformations
+### thermal_y8.yaml contains data for the yolo8 trainer
+### thermal_y8_val.yaml contains data for the yolo8 vaidator
+<sub>The various directories must be rearranged according to the local project </sub>
 
