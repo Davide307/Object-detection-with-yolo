@@ -56,7 +56,8 @@ def transofrmpool(label,transforms,transform_ids):
         cv2.imwrite(f"{os.path.splitext(label)[0]}_{transform_id}.jpg", transformed["image"])
         os.chdir('../../../../..')
         with open(
-                f"datasets/FLIR_ADAS_v2/images_thermal_train/converted_train/labels/{os.path.splitext(label)[0]}_{transform_id}.txt", "w") as f:
+                f"datasets/FLIR_ADAS_v2/images_thermal_train/converted_train/labels/{os.path.splitext(label)[0]}_"
+                f"{transform_id}.txt", "w") as f:
             for i, (bbox, class_id) in enumerate(zip(yolo_bboxes, transformed["class_labels"])):
                 f.write(f"{int(class_id)} {bbox[0]} {bbox[1]} {bbox[2]} {bbox[3]}\n")
         f.close()
@@ -110,7 +111,7 @@ def bbox_coco_to_yolo(bboxes,image):
     return yolo_bboxes
 
 
-def get_bboxes_yolo():
+def augment():
     #la lista i serve per dare nomi distinti alle varie immagini trasformate
     print(len(trasf.TRANSFORMS_LIST))
     i = range(1,len(trasf.TRANSFORMS_LIST)+1)
@@ -119,4 +120,4 @@ def get_bboxes_yolo():
     with Pool() as pool:
         pool.starmap(transofrmpool,zip(labels,repeat(trasf.TRANSFORMS_LIST),repeat(i)))
 if __name__ == '__main__':
-    get_bboxes_yolo()
+    augment()

@@ -1,6 +1,6 @@
 import os
 
-from ultralytics import YOLO
+from ultralytics import YOLO, NAS
 from ultralytics import settings
 import numpy as np
 import sys
@@ -18,9 +18,8 @@ def test_model(model, test_root, destination):
 
 
 if __name__ == '__main__':
-    model = YOLO('save/fine_tuning/fine_tuning/RUNbase6to8(new)')
+    model = YOLO('runs/detect/base6to8new25/weights/best.pt')
     #test_model(model,'datasets/FLIR_ADAS_v2/video_thermal_test/converted_test/images','save_yolo8/aug6to8(new)base')
-    #thermal_y8.yaml contiene le classi ed i path i vari dataset
-    #model.train(data='thermal_y8.yaml', epochs=10, batch=10, device=1)
-    met=model.val(data='thermal_y8_val.yaml',device=1)
-    print(met.box.map50)
+    #thermal_y8.yaml/thermal_y8_val.yaml contiene le classi ed i path i vari dataset
+    #model.train(data='thermal_y8.yaml', epochs=25, batch=16, device=1)
+    met=model.val(data='thermal_y8_val.yaml', device=1)
